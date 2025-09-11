@@ -1,0 +1,159 @@
+{
+  "info": {
+    "name": "Auth + Storage API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "b1f1d2aa-9c6a-4e3c-9f8d-111111111111"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Str0ngP@ssw0rd!\"\n}"
+            },
+            "url": {
+              "raw": "{{AUTH_BASE}}/api/auth/register/",
+              "host": ["{{AUTH_BASE}}"],
+              "path": ["api", "auth", "register", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login (Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json = {};",
+                  "try { json = pm.response.json(); } catch(e) {}",
+                  "if (json.access) {",
+                  "  pm.collectionVariables.set('ACCESS_TOKEN', json.access);",
+                  "}",
+                  "if (json.refresh) {",
+                  "  pm.collectionVariables.set('REFRESH_TOKEN', json.refresh);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Str0ngP@ssw0rd!\"\n}"
+            },
+            "url": {
+              "raw": "{{AUTH_BASE}}/api/auth/token/",
+              "host": ["{{AUTH_BASE}}"],
+              "path": ["api", "auth", "token", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{REFRESH_TOKEN}}\"\n}"
+            },
+            "url": {
+              "raw": "{{AUTH_BASE}}/api/auth/token/refresh/",
+              "host": ["{{AUTH_BASE}}"],
+              "path": ["api", "auth", "token", "refresh", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Storage",
+      "item": [
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": [] }
+              ]
+            },
+            "url": {
+              "raw": "{{STORAGE_BASE}}/api/media/upload/image/",
+              "host": ["{{STORAGE_BASE}}"],
+              "path": ["api", "media", "upload", "image", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Audio",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": [] }
+              ]
+            },
+            "url": {
+              "raw": "{{STORAGE_BASE}}/api/media/upload/audio/",
+              "host": ["{{STORAGE_BASE}}"],
+              "path": ["api", "media", "upload", "audio", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Media",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ACCESS_TOKEN}}" }
+            ],
+            "url": {
+              "raw": "{{STORAGE_BASE}}/api/media/",
+              "host": ["{{STORAGE_BASE}}"],
+              "path": ["api", "media", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "AUTH_BASE", "value": "http://127.0.0.1:8000" },
+    { "key": "STORAGE_BASE", "value": "http://127.0.0.1:8000" },
+    { "key": "ACCESS_TOKEN", "value": "" },
+    { "key": "REFRESH_TOKEN", "value": "" }
+  ]
+}
+
+
